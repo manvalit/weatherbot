@@ -1,9 +1,7 @@
 import telebot
 import pyowm
-import os
-from flask import Flask, request
-import logging
-bot = telebot.TeleBot('')
+
+bot = telebot.TeleBot('757986273:AAH2uu4cCJNzbaCzuZxvEVRy6ZDIALRcRD4')
 def toFixed(numObj, digits=0):
     return f"{numObj:.{digits}f}"
 def text(m):
@@ -29,23 +27,9 @@ def pogoda(m):
 
 
 
-if "HEROKU" in list(os.environ.keys()):
-    logger = telebot.logger
-    telebot.logger.setLevel(logging.INFO)
 
-    server = Flask(__name__)
-    @server.route("/bot", methods=['POST'])
-    def getMessage():
-        bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-        return "!", 200
-    @server.route("/")
-    def webhook():
-        bot.remove_webhook()
-        bot.set_webhook(url="https://mvweatherbot.herokuapp.com/") # этот url нужно заменить на url вашего Хероку приложения
-        return "?", 200
-    server.run(host="0.0.0.0", port=os.environ.get('PORT', 80))
-else:
-    # если переменной окружения HEROKU нету, значит это запуск с машины разработчика.
-    # Удаляем вебхук на всякий случай, и запускаем с обычным поллингом.
-    bot.remove_webhook()
-    bot.polling(none_stop=True)
+while True:
+    try:
+        bot.polling(none_stop=True)
+    except:
+        pass
